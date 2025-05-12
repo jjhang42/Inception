@@ -1,14 +1,58 @@
-name: Inception
+name: Inception42
 
 services:
   nginx:
     build:
       context: ./requirements/nginx
-      dockerfile: ../dockerfiles/Dockerfile.nginx
+      dockerfile: Dockerfile
     container_name: nginx
     ports:
-      - "443:80"
+      - "443:443"
     volumes:
-      - ./requirements/nginx/html:/usr/share/nginx/html
-      - ./requirements/nginx/conf:/etc/nginx/conf.d
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./requirements/nginx/conf.d:/etc/nginx/conf.d
+      - ./requirements/nginx/certs:/etc/nginx/certs
+    depends_on:
+      - wordpress
     restart: unless-stopped
+    networks:
+      - jjhangNet
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    container_name: wordpress
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+    volumes:
+      - wp-content:/var/www/html
+    networks:
+      - jjhangNet
+
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppass
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - jjhangNet
+
+volumes:
+  wp-content:
+  db-data:
+
+networks:
+  jjhangNet:
