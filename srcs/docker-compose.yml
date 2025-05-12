@@ -1,0 +1,14 @@
+name: Inception
+
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: ../dockerfiles/Dockerfile.nginx
+    container_name: nginx
+    ports:
+      - "443:80"
+    volumes:
+      - ./requirements/nginx/html:/usr/share/nginx/html
+      - ./requirements/nginx/conf:/etc/nginx/conf.d
+    restart: unless-stopped
