@@ -1,0 +1,33 @@
+# Node modules (if using Node.js)
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Docker
+*.log
+*.pid
+docker-compose.override.yml
+.env.local
+
+# VSCode
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+*.out
+
+# WordPress (if applicable)
+wp-content/uploads/
+wp-config.php
+
+# VM
+*/inception/*
