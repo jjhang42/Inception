@@ -12,6 +12,7 @@ RUN mkdir -p /run/mysqld /var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql
 
 # init.sql 및 entrypoint 복사
+COPY ./my.cnf /etc/mysql/my.cnf
 COPY init.sql /init.sql
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
