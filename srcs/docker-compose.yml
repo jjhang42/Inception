@@ -11,7 +11,7 @@ services:
       MYSQL_USER: wpuser
       MYSQL_PASSWORD: wppass
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - /home/jjhang/data/mariadb:/var/lib/mysql
     networks:
       - jjhangNet
 
@@ -21,12 +21,12 @@ services:
     container_name: wordpress
     depends_on:
       - mariadb
-    volumes:
-      - wordpress-data:/var/www/html/
-    networks:
-      - jjhangNet
     expose:
       - "9000"
+    volumes:
+      - /home/jjhang/data/wordpress:/var/www/html
+    networks:
+      - jjhangNet
 
   nginx:
     build:
@@ -37,15 +37,11 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress-data:/var/www/html/
+      - /home/jjhang/data/wordpress:/var/www/html
       - ./requirements/nginx/conf.d:/etc/nginx/conf.d
       - ./requirements/nginx/certs:/etc/nginx/certs
     networks:
       - jjhangNet
-
-volumes:
-  mariadb-data:
-  wordpress-data:
 
 networks:
   jjhangNet:
