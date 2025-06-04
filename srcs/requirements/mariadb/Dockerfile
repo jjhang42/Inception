@@ -1,21 +1,21 @@
 FROM debian:bullseye
 
-RUN apt-get update && apt-get install -y \
-    gnupg \
-    lsb-release \
-    curl \
-    ca-certificates
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Seoul
 
-RUN curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
-
-RUN apt-get update && apt-get install -y \
-    mariadb-server && \
+RUN apt-get update && \
+    apt-get install -y mariadb-server mariadb-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
+# MySQL 관련 디렉토리 설정
+RUN mkdir -p /run/mysqld /var/lib/mysql && \
+    chown -R mysql:mysql /run/mysqld /var/lib/mysql
 
-USER mysql
+# init.sql 및 entrypoint 복사
+COPY init.sql /init.sql
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3306
-
-CMD ["mariadbd"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["mysqld"]
