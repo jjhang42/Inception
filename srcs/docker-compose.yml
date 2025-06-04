@@ -35,7 +35,6 @@ services:
     depends_on:
       - wordpress
     ports:
-      - "8080:80"
       - "443:443"
     volumes:
       - wordpress-content:/var/www/html/wp-content
