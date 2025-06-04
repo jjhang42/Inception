@@ -10,6 +10,6 @@ RUN apt-get update && \
 COPY ./conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY ./certs /etc/nginx/certs
 
-EXPOSE 80 443
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]

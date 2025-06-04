@@ -22,7 +22,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - wordpress-content:/var/www/html/wp-content
+      - wordpress-data:/var/www/html
     networks:
       - jjhangNet
     expose:
@@ -37,13 +37,15 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress-content:/var/www/html/wp-content
+      - wordpress-data:/var/www/html
+      - ./requirements/nginx/conf.d:/etc/nginx/conf.d
+      - ./requirements/nginx/certs:/etc/nginx/certs
     networks:
       - jjhangNet
 
 volumes:
   mariadb-data:
-  wordpress-content:
+  wordpress-data:
 
 networks:
   jjhangNet:
