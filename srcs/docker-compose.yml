@@ -1,4 +1,4 @@
-name: Inception42
+name: inception42
 
 services:
   mariadb:
@@ -7,17 +7,44 @@ services:
     container_name: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppass
     volumes:
       - mariadb-data:/var/lib/mysql
-      - ./requirements/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "3306:3306"
-    restart: unless-stopped
     networks:
       - jjhangNet
-      
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress-content:/var/www/html/wp-content
+    networks:
+      - jjhangNet
+    expose:
+      - "9000"
+
+  nginx:
+    build:
+      context: ./requirements/nginx
+    container_name: nginx
+    depends_on:
+      - wordpress
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - wordpress-content:/var/www/html/wp-content
+    networks:
+      - jjhangNet
+
 volumes:
   mariadb-data:
+  wordpress-content:
 
 networks:
   jjhangNet:

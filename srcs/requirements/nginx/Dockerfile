@@ -1,14 +1,15 @@
-FROM alpine:3.20
+FROM debian:bullseye
 
-RUN apk add --no-cache nginx openssl
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Seoul
 
-# Nginx 기본 설정 파일 및 인증서 복사
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY ./conf/proxy_params /etc/nginx/proxy_params
+COPY ./conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY ./certs /etc/nginx/certs
 
-# 포트 오픈
-EXPOSE 443
+EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
