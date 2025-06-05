@@ -4,25 +4,27 @@
 COMPOSE       = docker compose
 COMPOSE_FILE  = --file ./srcs/docker-compose.yml
 
-# 바인딩 디렉토리 설정
+# 바인딩 디렉토리 (호스트 머신 기준)
 VOLUME_DIRS = \
-	srcs/requirements/mariadb \
-	srcs/requirements/wordpress \
-	srcs/requirements/nginx
+	/home/jjhang/data/mariadb \
+	/home/jjhang/data/wordpress
 
-# ✅ 디렉토리 존재 확인 및 생성
-init_dirs:
-	@echo "📁 디렉토리 확인 및 생성 중..."
+# 디렉토리 생성 + 권한 설정
+init_volumes:
+	@echo "📁 바인딩 디렉토리 확인 및 생성 중..."
 	@for dir in $(VOLUME_DIRS); do \
 		if [ ! -d $$dir ]; then \
 			echo "📂 생성: $$dir"; \
-			mkdir -p $$dir; \
+			sudo mkdir -p $$dir; \
+			sudo chown -R 1000:1000 $$dir; \
+		else \
+			echo "✅ 존재: $$dir"; \
 		fi \
 	done
-	@echo "✅ 완료."
+	@echo "🎉 바인딩 디렉토리 준비 완료."
 
 # 컨테이너 실행
-up: init_dirs
+up: init_volumes
 	$(COMPOSE) $(COMPOSE_FILE) up
 
 # 컨테이너 중지 및 제거
@@ -30,7 +32,7 @@ down:
 	$(COMPOSE) $(COMPOSE_FILE) down
 
 # 이미지 빌드
-build: init_dirs
+build: init_volumes
 	$(COMPOSE) $(COMPOSE_FILE) build
 
 # 로그 보기
@@ -46,7 +48,7 @@ restart:
 ps:
 	$(COMPOSE) $(COMPOSE_FILE) ps
 
-# 셸 접속 (예: make sh SERVICE=wordpress)
+# 셸 접속
 sh:
 	$(COMPOSE) $(COMPOSE_FILE) exec $(SERVICE) /bin/bash
 
@@ -57,12 +59,12 @@ clean:
 # 도움말
 help:
 	@echo "🛠️ Docker Compose Makefile 명령어 목록:"
-	@echo "  make up         - 컨테이너 실행"
-	@echo "  make down       - 컨테이너 중지 및 제거"
-	@echo "  make build      - 이미지 빌드"
-	@echo "  make logs       - 로그 보기"
-	@echo "  make restart    - 서비스 재시작"
-	@echo "  make ps         - 서비스 상태 보기"
+	@echo "  make up             - 컨테이너 실행"
+	@echo "  make down           - 컨테이너 중지 및 제거"
+	@echo "  make build          - 이미지 빌드"
+	@echo "  make logs           - 로그 보기"
+	@echo "  make restart        - 서비스 재시작"
+	@echo "  make ps             - 서비스 상태 보기"
 	@echo "  make sh SERVICE=서비스명 - 셸 접속"
-	@echo "  make clean      - 컨테이너 + 볼륨 제거"
-	@echo "  make init_dirs  - 바인딩 디렉토리 생성"
+	@echo "  make clean          - 컨테이너 + 볼륨 제거"
+	@echo "  make init_volumes   - 바인딩 디렉토리 생성 및 권한 설정"
