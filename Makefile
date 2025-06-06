@@ -1,27 +1,41 @@
 # Makefile for Docker Compose in ./srcs directory
 
-# Compose 설정
+# Docker Compose 설정
 COMPOSE       = docker compose
 COMPOSE_FILE  = --file ./srcs/docker-compose.yml
 
-# 바인딩 디렉토리 (호스트 머신 기준)
-VOLUME_DIRS = \
-	/home/jjhang/data/mariadb \
-	/home/jjhang/data/wordpress
+# .env 변수 불러오기
+include srcs/.env
+export HOST_UID HOST_GID HOST_DATA
 
-# 디렉토리 생성 + 권한 설정
+# UID/GID 설정
+MYSQL_UID := 999
+MYSQL_GID := 999
+
+# 바인딩될 로컬 경로
+MARIADB_PATH = $(HOST_DATA)/mariadb
+WORDPRESS_PATH = $(HOST_DATA)/wordpress
+LOCAL_PATHS = $(MARIADB_PATH) $(WORDPRESS_PATH)
+
+# 초기 볼륨 디렉토리 생성 및 권한 설정
 init_volumes:
-	@echo "📁 바인딩 디렉토리 확인 및 생성 중..."
-	@for dir in $(VOLUME_DIRS); do \
+	@echo "Checking and creating bind mount directories..."
+	@for dir in $(LOCAL_PATHS); do \
 		if [ ! -d $$dir ]; then \
-			echo "📂 생성: $$dir"; \
+			echo "Creating directory: $$dir"; \
 			sudo mkdir -p $$dir; \
-			sudo chown -R 1000:1000 $$dir; \
 		else \
-			echo "✅ 존재: $$dir"; \
+			echo "Directory already exists: $$dir"; \
 		fi \
 	done
-	@echo "🎉 바인딩 디렉토리 준비 완료."
+	@echo "Setting ownership and permissions..."
+	@echo "MariaDB volume: $(MARIADB_PATH), owner: $(MYSQL_UID):$(MYSQL_GID)"
+	@sudo chmod 755 $(MARIADB_PATH)
+	@sudo chown -R $(MYSQL_UID):$(MYSQL_GID) $(MARIADB_PATH)
+	@echo "WordPress volume: $(WORDPRESS_PATH), owner: $(HOST_UID):$(HOST_GID)"
+	@sudo chmod 755 $(WORDPRESS_PATH)
+	@sudo chown -R $(HOST_UID):$(HOST_GID) $(WORDPRESS_PATH)
+	@echo "Volume initialization completed."
 
 # 컨테이너 실행
 up: init_volumes
@@ -35,7 +49,7 @@ down:
 build: init_volumes
 	$(COMPOSE) $(COMPOSE_FILE) build
 
-# 로그 보기
+# 로그 출력
 logs:
 	$(COMPOSE) $(COMPOSE_FILE) logs -f
 
@@ -48,23 +62,23 @@ restart:
 ps:
 	$(COMPOSE) $(COMPOSE_FILE) ps
 
-# 셸 접속
+# 쉘 접속
 sh:
 	$(COMPOSE) $(COMPOSE_FILE) exec $(SERVICE) /bin/bash
 
-# 컨테이너 + 볼륨 제거
+# 전체 정리
 clean:
 	$(COMPOSE) $(COMPOSE_FILE) down -v
 
 # 도움말
 help:
-	@echo "🛠️ Docker Compose Makefile 명령어 목록:"
-	@echo "  make up             - 컨테이너 실행"
-	@echo "  make down           - 컨테이너 중지 및 제거"
-	@echo "  make build          - 이미지 빌드"
-	@echo "  make logs           - 로그 보기"
-	@echo "  make restart        - 서비스 재시작"
-	@echo "  make ps             - 서비스 상태 보기"
-	@echo "  make sh SERVICE=서비스명 - 셸 접속"
-	@echo "  make clean          - 컨테이너 + 볼륨 제거"
-	@echo "  make init_volumes   - 바인딩 디렉토리 생성 및 권한 설정"
+	@echo "Makefile Commands:"
+	@echo "  make up             - Start containers"
+	@echo "  make down           - Stop and remove containers"
+	@echo "  make build          - Build images"
+	@echo "  make logs           - Show container logs"
+	@echo "  make restart        - Restart services"
+	@echo "  make ps             - Show container status"
+	@echo "  make sh SERVICE=x   - Open shell inside container"
+	@echo "  make clean          - Remove containers and volumes"
+	@echo "  make init_volumes   - Prepare bind mount directories"

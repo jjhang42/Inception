@@ -8,8 +8,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # MySQL 관련 디렉토리 설정
-RUN mkdir -p /run/mysqld /var/lib/mysql && \
-    chown -R mysql:mysql /run/mysqld /var/lib/mysql
+RUN mkdir -p /run/mysqld /var/lib/mysql
 
 # init.sql 및 entrypoint 복사
 COPY ./my.cnf /etc/mysql/my.cnf

@@ -1,4 +1,4 @@
-name: inception42
+name: inception
 
 services:
   mariadb:
@@ -11,7 +11,7 @@ services:
       MYSQL_USER: wpuser
       MYSQL_PASSWORD: wppass
     volumes:
-      - /home/jjhang/data/mariadb:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - jjhangNet
 
@@ -24,7 +24,7 @@ services:
     expose:
       - "9000"
     volumes:
-      - /home/jjhang/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - jjhangNet
 
@@ -37,7 +37,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/jjhang/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
       - ./requirements/nginx/conf.d:/etc/nginx/conf.d
       - ./requirements/nginx/certs:/etc/nginx/certs
     networks:
@@ -45,3 +45,18 @@ services:
 
 networks:
   jjhangNet:
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${HOST_DATA}/mariadb
+      o: bind
+
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${HOST_DATA}/wordpress
+      o: bind
