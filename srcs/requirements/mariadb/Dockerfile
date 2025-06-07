@@ -10,9 +10,6 @@ RUN apt-get update && \
     apt-get install -y mariadb-server mariadb-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 데이터 디렉토리 생성
-#RUN mkdir -p /run/mysqld /var/lib/mysql
-
 # 설정 및 초기화 파일 복사
 COPY ./my.cnf /etc/mysql/my.cnf
 COPY init.sql /init.sql

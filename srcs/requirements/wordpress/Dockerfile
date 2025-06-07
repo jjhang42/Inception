@@ -3,7 +3,6 @@ FROM debian:bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Seoul
 
-# 필요한 패키지 설치
 RUN apt-get update && apt-get install -y \
     php7.4 \
     php7.4-fpm \
@@ -14,29 +13,36 @@ RUN apt-get update && apt-get install -y \
     php7.4-mbstring \
     php7.4-xml \
     php7.4-zip \
+    mariadb-client \
     curl \
     unzip \
     wget \
-    mariadb-client \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    less \
+    vim \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# php-fpm이 PID 파일을 쓸 수 있도록 디렉토리 생성
+# WP-CLI 설치
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+
+# PHP-FPM PID 디렉토리
 RUN mkdir -p /run/php && chown www-data:www-data /run/php
 
-# 워드프레스 파일을 미리 다운로드 받아 두기만 함 (설치하지 않음)
+# 워드프레스 설치 디렉토리
+RUN mkdir -p /var/www/html && chown -R www-data:www-data /var/www/html
+
+# 사전 WordPress 다운로드
 RUN curl -o /tmp/wordpress.zip https://wordpress.org/latest.zip && \
     unzip /tmp/wordpress.zip -d /tmp && \
-    rm /tmp/wordpress.zip
+    cp -r /tmp/wordpress/* /var/www/html && \
+    rm -rf /tmp/wordpress /tmp/wordpress.zip
 
-# 엔트리포인트 스크립트 복사
+# FPM 설정 및 엔트리포인트 복사
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# PHP-FPM 설정 복사
-COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
-
+WORKDIR /var/www/html
 EXPOSE 9000
-
-# 엔트리포인트 지정
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm7.4", "-F"]
