@@ -43,7 +43,7 @@ up: init_volumes
 
 # 컨테이너 중지 및 제거
 down:
-	$(COMPOSE) $(COMPOSE_FILE) down
+	$(COMPOSE) $(COMPOSE_FILE) down -v
 
 # 이미지 빌드
 build: init_volumes
