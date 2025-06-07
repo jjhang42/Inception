@@ -3,13 +3,15 @@ set -e
 
 DATA_DIR="/var/lib/mysql"
 
+echo "entry entrypoint"
+
 # MariaDB 데이터 디렉토리 초기화 여부 확인
-if [ ! -d "$DATA_DIR/mysql" ]; then
+# if [ ! -d "$DATA_DIR/mysql" ]; then
     echo "[INFO] Initializing MariaDB..."
 
     # 데이터 디렉토리 초기화
-    mariadb-install-db --user=mysql --datadir="$DATA_DIR"
-
+    # mariadb-install-db --user=mysql --datadir="$DATA_DIR"
+    chown -R mysql $DATA_DIR
     # MariaDB 임시 실행
     echo "[INFO] Starting temporary MariaDB server..."
     mysqld_safe --datadir="$DATA_DIR" --skip-networking &
@@ -38,7 +40,7 @@ if [ ! -d "$DATA_DIR/mysql" ]; then
 
     wait "$pid"
     echo "[INFO] MariaDB initialization completed."
-fi
+# fi
 
 # 실제 MariaDB 실행
 exec mysqld --user=mysql

@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 데이터 디렉토리 생성
-RUN mkdir -p /run/mysqld /var/lib/mysql
+#RUN mkdir -p /run/mysqld /var/lib/mysql
 
 # 설정 및 초기화 파일 복사
 COPY ./my.cnf /etc/mysql/my.cnf
@@ -23,5 +23,6 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 3306
 
 # 엔트리포인트 + 기본 명령
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["mysqld"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# CMD ["tail", "-f", "/dev/null"]
+# CMD ["mysqld"]

@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- 테스트용 사용자 삽입
-INSERT INTO users (username, role) VALUES ('jjhang', 'admin'), ('visitor', 'visitor');
+--INSERT INTO users (username, role) VALUES ('jjhang', 'admin'), ('visitor', 'visitor');
