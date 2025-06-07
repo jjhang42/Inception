@@ -15,10 +15,17 @@ if [ ! -f wp-config.php ]; then
     wp core install \
         --url="https://${DOMAIN_NAME}" \
         --title="Inception WordPress" \
-        --admin_user="admin" \
-        --admin_password="adminpass" \
-        --admin_email="admin@example.com" \
+        --admin_user="${WP_ADMIN_USER}" \
+        --admin_password="${WP_ADMIN_PASSWORD}" \
+        --admin_email="${WP_ADMIN_EMAIL}" \
         --skip-email \
+        --path="/var/www/html" \
+        --allow-root
+
+    wp user create \
+        "${WP_USER_NAME}" "${WP_USER_EMAIL}" \
+        --user_pass="${WP_USER_PASSWORD}" \
+        --role="${WP_USER_ROLE}" \
         --path="/var/www/html" \
         --allow-root
 fi
