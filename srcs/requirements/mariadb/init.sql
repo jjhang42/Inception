@@ -13,6 +13,3 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL,
     role ENUM('admin', 'visitor') NOT NULL
 );
-
--- 테스트용 사용자 삽입
---INSERT INTO users (username, role) VALUES ('jjhang', 'admin'), ('visitor', 'visitor');

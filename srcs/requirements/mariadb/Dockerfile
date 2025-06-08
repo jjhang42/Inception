@@ -22,4 +22,4 @@ EXPOSE 3306
 # 엔트리포인트 + 기본 명령
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 # CMD ["tail", "-f", "/dev/null"]
-# CMD ["mysqld"]
+CMD ["mysqld"]

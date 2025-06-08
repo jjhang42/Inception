@@ -10,7 +10,6 @@ echo "entry entrypoint"
     echo "[INFO] Initializing MariaDB..."
 
     # 데이터 디렉토리 초기화
-    # mariadb-install-db --user=mysql --datadir="$DATA_DIR"
     chown -R mysql $DATA_DIR
     # MariaDB 임시 실행
     echo "[INFO] Starting temporary MariaDB server..."
