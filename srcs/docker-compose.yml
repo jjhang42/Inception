@@ -8,7 +8,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}          
+      MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -22,14 +22,24 @@ services:
     depends_on:
       - mariadb
     environment:
-      - WP_ADMIN_USER=${WP_ADMIN_USER}
-      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
-      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
-      - DOMAIN_NAME=${DOMAIN_NAME}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      DOMAIN_NAME: ${DOMAIN_NAME}
+
+      # WordPress DB 연결용
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+      # WordPress 관리자 계정용
+      WP_ADMIN_USER: ${WP_ADMIN_USER}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+
+      # 일반 사용자 계정용 (선택)
+      WP_USER_NAME: ${WP_USER_NAME}
+      WP_USER_EMAIL: ${WP_USER_EMAIL}
+      WP_USER_PASSWORD: ${WP_USER_PASSWORD}
+      WP_USER_ROLE: ${WP_USER_ROLE}
     expose:
       - "9000"
     volumes:
