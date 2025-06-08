@@ -11,7 +11,7 @@ if [ ! -f wp-config.php ]; then
         sleep 2
     done
     echo "[INFO] MariaDB is up!"
-
+    echo "ENV DEBUG: DB_USER=${MYSQL_USER} / DB_NAME=${MYSQL_DATABASE}"
     echo "wp config creating..."
     wp config create \
         --dbname="${MYSQL_DATABASE}" \
