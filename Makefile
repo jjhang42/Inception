@@ -17,6 +17,21 @@ MARIADB_PATH = $(HOST_DATA)/mariadb
 WORDPRESS_PATH = $(HOST_DATA)/wordpress
 LOCAL_PATHS = $(MARIADB_PATH) $(WORDPRESS_PATH)
 
+DOMAIN=jjhang.42.fr
+IP=127.0.0.1
+
+add-host:
+	@if grep -q "$(IP) $(DOMAIN)" /etc/hosts; then \
+		echo "[✓] $(DOMAIN) already exists in /etc/hosts"; \
+	else \
+		echo "[+] Adding $(DOMAIN) to /etc/hosts"; \
+		echo "$(IP) $(DOMAIN)" | sudo tee -a /etc/hosts > /dev/null; \
+	fi
+
+remove-host:
+	@echo "[-] Removing $(DOMAIN) from /etc/hosts if exists"
+	@sudo sed -i "/$(DOMAIN)/d" /etc/hosts
+
 # 초기 볼륨 디렉토리 생성 및 권한 설정
 init_volumes:
 	@echo "Checking and creating bind mount directories..."
