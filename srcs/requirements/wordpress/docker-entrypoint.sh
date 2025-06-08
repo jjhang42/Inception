@@ -6,7 +6,7 @@ if [ ! -f wp-config.php ]; then
     echo "[INFO] wp-config.php not found. Running wp core install setup..."
 
     echo "[INFO] Waiting for MariaDB to be available..."
-    until mysqladmin ping -h "mariadb" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent; do
+    until mysqladmin ping -h "mariadb" -u root -p"${MYSQL_ROOT_PASSWORD}" --silent; do
         echo "[INFO] MariaDB is unavailable - sleeping"
         sleep 2
     done
