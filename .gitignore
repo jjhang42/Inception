@@ -5,7 +5,7 @@ node_modules/
 __pycache__/
 *.py[cod]
 *.egg-info/
-.env
+*/.env
 
 # Docker
 *.log
