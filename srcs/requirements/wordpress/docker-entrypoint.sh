@@ -34,8 +34,8 @@ if [ ! -f wp-config.php ]; then
         --allow-root
     echo "[WP] core 설치 완료"
 
-    echo "[SETUP] 블로그 기본 세팅 실행"
-    sh /var/www/html/tools/setup-blog.sh
+    echo "[WP] 테마 jjhangBlog 활성화"
+    wp theme activate jjhangBlog --allow-root
 
     echo "[WP] 일반 사용자 생성"
     wp user create \
