@@ -38,9 +38,6 @@ COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-COPY ./tools /var/www/html/tools
-RUN chmod +x /var/www/html/tools/setup-blog.sh
-
 COPY ./themes/jjhangBlog /var/www/html/wp-content/themes/jjhangBlog
 
 WORKDIR /var/www/html
